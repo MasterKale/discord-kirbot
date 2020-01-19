@@ -2,8 +2,8 @@ import { CommandoClient, SQLiteProvider } from 'discord.js-commando';
 import sqlite from 'sqlite';
 import path from 'path';
 
-import { DISCORD_BOT_TOKEN, CMD_GROUPS } from './constants';
-import { logger } from './logger';
+import { DISCORD_BOT_TOKEN, CMD_GROUPS } from './helpers/constants';
+import { logger } from './helpers/logger';
 
 const bot = new CommandoClient({
   commandPrefix: '<',
