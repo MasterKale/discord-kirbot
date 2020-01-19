@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import pino from 'pino';
+import pino, { MixinFn } from 'pino';
 import { SnowflakeUtil } from 'discord.js';
 
 import { NODE_ENV } from './constants';
@@ -9,9 +9,15 @@ export interface LogTag {
   req_id: string;
 }
 
+let mixin: MixinFn | undefined = undefined;
+if (NODE_ENV === 'production') {
+  mixin = () => ({ hostname: 'prod-kirbot' });
+}
+
 export const logger = pino({
   level: 'debug',
   prettyPrint: NODE_ENV === 'development',
+  mixin,
 });
 
 /**

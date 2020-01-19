@@ -15,7 +15,8 @@
     "@typescript-eslint/no-unused-vars": "error",
     "semi": "error",
     "comma-dangle": ["error", "always-multiline"],
-    "max-len": ["error", 100]
+    "max-len": ["error", 100],
+    "no-undef-init": "off"
   },
   "ignorePatterns": [
     "*.spec.ts"
