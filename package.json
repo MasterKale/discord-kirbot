@@ -1,0 +1,38 @@
+{
+  "name": "discord-kirbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=development nodemon src/bot.ts",
+    "build": "tsc",
+    "host": "NODE_ENV=production node dist/bot.js",
+    "lint": "eslint src/ --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^6.8.0",
+    "eslint-config-semistandard": "^15.0.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.0.10",
+    "lint-staged": "^9.5.0",
+    "nodemon": "^2.0.2",
+    "pino-pretty": "^3.5.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "discord.js": "github:discordjs/discord.js",
+    "discord.js-commando": "github:MasterKale/Commando",
+    "pino": "^5.16.0",
+    "sqlite": "^3.0.3"
+  }
+}
