@@ -2,6 +2,8 @@
 import pino from 'pino';
 import { SnowflakeUtil } from 'discord.js';
 
+import { NODE_ENV } from './constants';
+
 export interface LogTag {
   // eslint-disable-next-line camelcase
   req_id: string;
@@ -9,6 +11,7 @@ export interface LogTag {
 
 export const logger = pino({
   level: 'debug',
+  prettyPrint: NODE_ENV === 'development',
 });
 
 /**
