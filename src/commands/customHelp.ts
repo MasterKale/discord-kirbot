@@ -145,7 +145,7 @@ export default class HelpCommand extends Command {
       const embed = new KirbotEmbed()
         .setTitle('Kirbot Help')
         .setDescription(stripIndents`
-          *Nintengoon's helper and friend *
+          *Nintengoon's helper and friend (>^.^)>*
 
           Use ${this.usage('<command>')} to view detailed information about a specific command.
 
