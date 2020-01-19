@@ -1,4 +1,5 @@
 export const {
+  NODE_ENV = 'production',
   DISCORD_BOT_TOKEN,
   PAPERTRAIL_HOST,
   PAPERTRAIL_PORT,
