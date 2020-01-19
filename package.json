@@ -13,6 +13,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/capitalize": "^1.0.1",
+    "@types/common-tags": "^1.8.0",
+    "@types/pino": "^5.15.3",
+    "@types/ws": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",
@@ -30,6 +34,8 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
+    "capitalize": "^2.0.1",
+    "common-tags": "^1.8.0",
     "discord.js": "github:discordjs/discord.js",
     "discord.js-commando": "github:MasterKale/Commando",
     "pino": "^5.16.0",
