@@ -29,6 +29,8 @@ bot.registry
     unknownCommand: false,
     help: false,
     prefix: false,
+    commandState: false,
+    ping: false,
   })
   // Automatically load commands that exist in the commands/ directory
   // A custom filter is specified so that the `require-all` library picks up .ts files during dev
