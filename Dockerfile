@@ -9,7 +9,7 @@ RUN apk add --update git openssh python3 build-base
 WORKDIR /usr/src/app
 
 # Install dependencies
-COPY package*.json tsconfig.json ./
+COPY package*.json tsconfig.json host.sh ./
 RUN npm install
 
 # Copy source files

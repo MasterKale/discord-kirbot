@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=development nodemon src/bot.ts",
     "build": "tsc",
-    "host": "NODE_ENV=production node dist/bot.js",
+    "host": "./host.sh",
     "lint": "eslint src/ --ext .ts"
   },
   "keywords": [],
