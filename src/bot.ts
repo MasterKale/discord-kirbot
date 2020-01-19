@@ -7,7 +7,7 @@ import { logger } from './helpers/logger';
 
 const bot = new CommandoClient({
   commandPrefix: '<',
-  owner: '',
+  owner: '148474055949942787',
   disabledEvents: [
     'TYPING_START',
   ],
