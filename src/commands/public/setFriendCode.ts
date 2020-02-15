@@ -11,8 +11,14 @@ interface CommandArgs {
   code: string;
 }
 
-// Expect a value like this: SW-1234-5678-9012
-const regexFriendCode = /^sw-[\d]{4}-[\d]{4}-[\d]{4}$/i;
+/**
+ * Expect values like this:
+ * SW-1234-5678-9012
+ * SW 1234 5678 9012
+ * 1234-5678-9012
+ * 1234 5678 9012
+ */
+const regexFriendCode = /^(?:sw[- ])?([\d]{4}[- ][\d]{4}[- ][\d]{4})$/i;
 
 export default class SetFriendCodeCommand extends KirbotCommand {
   constructor (client: CommandoClient) {
@@ -26,7 +32,7 @@ export default class SetFriendCodeCommand extends KirbotCommand {
       `,
       guildOnly: true,
       examples: [
-        `${CMD_NAMES.PUBLIC_SET_FRIEND_CODE} SW-1234-5678-9012`,
+        `${CMD_NAMES.PUBLIC_SET_FRIEND_CODE} SW 1234 5678 9012`,
       ],
       args: [
         {
@@ -47,8 +53,8 @@ export default class SetFriendCodeCommand extends KirbotCommand {
 
             if (!matched) {
               return oneLine`
-                that doesn't appear to be a valid friend code. Try again (hint: are you missing
-                "SW-" at the beginning?)
+                that doesn't appear to be a valid friend code. Try entering it here again (hint:
+                try entering it as "SW 1234 5678 9012")
               `;
             }
 
@@ -76,10 +82,16 @@ export default class SetFriendCodeCommand extends KirbotCommand {
       currentCodes = {};
     }
 
-    currentCodes[member.id] = code;
+    let normalized = code.replace(/-/g, ' ').toUpperCase();
+    if (normalized.substr(0, 3) !== 'SW ') {
+      // Ensure friend code starts with SW
+      normalized = `SW ${normalized}`;
+    }
+
+    currentCodes[member.id] = normalized;
 
     this.client.settings.set(SETTINGS.FRIEND_CODES, currentCodes);
 
-    return message.reply(`your friend code is now ${code}`);
+    return message.reply(`your friend code is now **${normalized}**`);
   }
 }
