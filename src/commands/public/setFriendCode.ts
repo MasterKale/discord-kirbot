@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-import { GuildMember } from 'discord.js';
 import { CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { oneLine, stripIndents } from 'common-tags';
 
@@ -8,8 +7,8 @@ import { CMD_GROUPS, CMD_NAMES, SETTINGS } from '../../helpers/constants';
 import { logger, getLogTag } from '../../helpers/logger';
 import logCommandStart from '../../helpers/logCommandStart';
 
-interface RoleArgs {
-  code: string | GuildMember;
+interface CommandArgs {
+  code: string;
 }
 
 // Expect a value like this: SW-1234-5678-9012
@@ -20,7 +19,7 @@ export default class SetFriendCodeCommand extends KirbotCommand {
     super(client, {
       name: CMD_NAMES.PUBLIC_SET_FRIEND_CODE,
       group: CMD_GROUPS.PUBLIC,
-      memberName: 'friend_code',
+      memberName: 'friend_code_set',
       description: 'Register your Nintendo Switch friend code',
       details: stripIndents`
         Register your friend code so that others can easily add you!
@@ -62,7 +61,7 @@ export default class SetFriendCodeCommand extends KirbotCommand {
     });
   }
 
-  async run (message: CommandoMessage, { code }: RoleArgs) {
+  async run (message: CommandoMessage, { code }: CommandArgs) {
     const { id, member } = message;
 
     const tag = getLogTag(id);
