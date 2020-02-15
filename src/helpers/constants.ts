@@ -11,6 +11,12 @@ export enum CMD_GROUPS {
 
 export enum CMD_NAMES {
   PUBLIC_TOGGLE_ROLE = 'toggle-role',
+  PUBLIC_SET_FRIEND_CODE = 'set-fc',
+  PUBLIC_GET_FRIEND_CODE = 'fc',
+}
+
+export enum SETTINGS {
+  FRIEND_CODES = 'friendCodes',
 }
 
 /**
