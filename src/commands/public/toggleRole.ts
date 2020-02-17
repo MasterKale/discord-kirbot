@@ -92,11 +92,11 @@ export default class SetDescriptionCommand extends KirbotCommand {
       if (hasRole) {
         logger.info(tag, 'Member has role, removing role');
         await member.roles.remove(role, 'Toggled role off');
-        reply = `you no longer have the ${role.name} role`;
+        reply = `you no longer have the **${role.name}** role`;
       } else {
         logger.info(tag, 'Member does not have role, adding role');
         await member.roles.add(role, 'Toggled role on');
-        reply = `you now have the ${role.name} role`;
+        reply = `you now have the **${role.name}** role`;
       }
 
       return message.reply(reply);
