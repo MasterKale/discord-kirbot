@@ -52,7 +52,9 @@ export default class SetDescriptionCommand extends KirbotCommand {
             logger.info(tag, `Validating role name "${roleName}"`);
 
             const toFind = `${roleName.toLowerCase()}`;
-            const role = message.guild.roles.find((role) => role.name.toLowerCase() === toFind);
+            const role = message.guild.roles.cache.find(
+              (role) => role.name.toLowerCase() === toFind,
+            );
 
             if (!role) {
               return oneLine`
@@ -71,7 +73,7 @@ export default class SetDescriptionCommand extends KirbotCommand {
             logger.info(tag, `Parsing ${roleName}`);
 
             const toFind = `${roleName.toLowerCase()}`;
-            return message.guild.roles.find((role) => role.name.toLowerCase() === toFind)!;
+            return message.guild.roles.cache.find((role) => role.name.toLowerCase() === toFind)!;
           },
         },
       ],
@@ -90,7 +92,7 @@ export default class SetDescriptionCommand extends KirbotCommand {
       `,
     );
 
-    const hasRole = member.roles.has(role.id);
+    const hasRole = member.roles.cache.has(role.id);
 
     try {
       let reply;
