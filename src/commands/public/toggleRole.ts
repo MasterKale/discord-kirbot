@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { Role } from 'discord.js';
 import { CommandoClient, CommandoMessage } from 'discord.js-commando';
 import { oneLine, stripIndents } from 'common-tags';
+import Fuse from 'fuse.js';
 
 import KirbotCommand from '../../helpers/KirbotCommand';
 import { CMD_GROUPS, CMD_NAMES, API_ERROR } from '../../helpers/constants';
@@ -9,7 +9,7 @@ import { logger, getLogTag } from '../../helpers/logger';
 import logCommandStart from '../../helpers/logCommandStart';
 
 interface RoleArgs {
-  role: Role;
+  roleName: string;
 }
 
 export default class SetDescriptionCommand extends KirbotCommand {
@@ -40,50 +40,41 @@ export default class SetDescriptionCommand extends KirbotCommand {
       ],
       args: [
         {
-          key: 'role',
+          key: 'roleName',
           type: 'string',
           prompt: 'which role are you interested in?',
-          validate: (roleName: string, message: CommandoMessage): boolean | string => {
-            const { id } = message;
-            const tag = getLogTag(id);
-
-            logCommandStart(tag, message);
-
-            logger.info(tag, `Validating role name "${roleName}"`);
-
-            const toFind = `${roleName.toLowerCase()}`;
-            const role = message.guild.roles.cache.find(
-              (role) => role.name.toLowerCase() === toFind,
-            );
-
-            if (!role) {
-              return oneLine`
-                that doesn't appear to be a valid role. Try again.
-              `;
-            }
-
-            logger.info(tag, `Found matching role "${role.name}" (${role.id})`);
-
-            return true;
-          },
-          parse: (roleName: string, message: CommandoMessage): Role => {
-            const { id } = message;
-            const tag = getLogTag(id);
-
-            logger.info(tag, `Parsing ${roleName}`);
-
-            const toFind = `${roleName.toLowerCase()}`;
-            return message.guild.roles.cache.find((role) => role.name.toLowerCase() === toFind)!;
-          },
         },
       ],
     });
   }
 
-  async run (message: CommandoMessage, { role }: RoleArgs) {
+  async run (message: CommandoMessage, { roleName }: RoleArgs) {
     const { id, member } = message;
 
     const tag = getLogTag(id);
+
+    logCommandStart(tag, message);
+
+    logger.info(tag, `Validating role name "${roleName}"`);
+
+    const toFind = `${roleName.toLowerCase()}`;
+
+    message.channel.startTyping();
+
+    // Set up a Fuse so we can fuzzy search across role names
+    const rolesFuse = new Fuse(message.guild.roles.cache.array(), {
+      keys: ['name'],
+    });
+    const role = rolesFuse.search(toFind)[0];
+
+    if (!role) {
+      message.channel.stopTyping();
+      return message.reply(oneLine`
+        \`${toFind}\` doesn't appear to be a valid role. Try again.
+      `);
+    }
+
+    logger.info(tag, `Found matching role "${role.name}" (${role.id})`);
 
     logger.info(
       tag,
@@ -93,6 +84,8 @@ export default class SetDescriptionCommand extends KirbotCommand {
     );
 
     const hasRole = member.roles.cache.has(role.id);
+
+    message.channel.stopTyping();
 
     try {
       let reply;
