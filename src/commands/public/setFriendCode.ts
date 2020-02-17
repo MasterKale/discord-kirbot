@@ -39,29 +39,6 @@ export default class SetFriendCodeCommand extends KirbotCommand {
           key: 'code',
           type: 'string',
           prompt: 'what is your Nintendo Switch friend code?',
-          validate: (code: string, message: CommandoMessage): boolean | string => {
-            const { id } = message;
-            const tag = getLogTag(id);
-
-            logCommandStart(tag, message);
-
-            // User is registering a friend code for their self
-            logger.info(tag, `Validating friend code "${code}"`);
-
-            // Make sure the friend code is correctly formatted
-            const matched = regexFriendCode.test(code);
-
-            if (!matched) {
-              return oneLine`
-                that doesn't appear to be a valid friend code. Try entering it here again (hint:
-                try entering it as "SW 1234 5678 9012")
-              `;
-            }
-
-            logger.info(tag, 'Friend code matches expected format');
-
-            return true;
-          },
         },
       ],
     });
@@ -71,6 +48,25 @@ export default class SetFriendCodeCommand extends KirbotCommand {
     const { id, member } = message;
 
     const tag = getLogTag(id);
+
+    logCommandStart(tag, message);
+
+    // User is registering a friend code for their self
+    logger.info(tag, `Validating friend code "${code}"`);
+
+    // Make sure the friend code is correctly formatted
+    const matched = regexFriendCode.test(code);
+
+    if (!matched) {
+      logger.info(tag, 'Invalid friend code, exiting');
+
+      return message.reply(oneLine`
+        that doesn't appear to be a valid friend code. Try again (hint:
+        try entering it as **SW 1234 5678 9012**)
+      `);
+    }
+
+    logger.info(tag, 'Friend code matches expected format');
 
     logger.info(
       tag,
