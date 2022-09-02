@@ -16,7 +16,6 @@ if (NODE_ENV === 'production') {
 
 export const logger = pino({
   level: 'debug',
-  prettyPrint: NODE_ENV === 'development',
   mixin,
 });
 
