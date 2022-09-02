@@ -1,6 +1,7 @@
 import path from 'node:path';
 
-import sqlite from 'sqlite';
+import * as sqlite from 'sqlite';
+import sqlite3 from 'sqlite3';
 import type { Logger } from 'pino';
 
 class BaseDatabaseService {
@@ -13,13 +14,12 @@ class BaseDatabaseService {
     try {
       const db = await sqlite.open({
         filename: path.join(__dirname, '../settings.db'),
-        driver: sqlite.Database,
+        driver: sqlite3.Database,
       });
 
       this._db = db;
     } catch (err) {
-      const _err = err as Error;
-      this._logger.error('Error loading SQLite DB:', _err);
+      this._logger.error(err, 'Error loading SQLite DB:');
     }
   }
 
