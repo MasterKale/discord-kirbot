@@ -1,6 +1,12 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export const {
   NODE_ENV = 'production',
   DISCORD_BOT_TOKEN,
+  DISCORD_BOT_APPLICATION_ID,
+  DISCORD_BOT_GUILD_ID,
   PAPERTRAIL_HOST,
   PAPERTRAIL_PORT,
 } = process.env;

@@ -1,21 +1,9 @@
-import sqlite from 'sqlite';
-import path from 'path';
+import { Client, GatewayIntentBits } from 'discord.js';
 
 import { DISCORD_BOT_TOKEN } from './helpers/constants';
 import { logger } from './helpers/logger';
+import { DatabaseService } from './services/database';
 
-const bot = new CommandoClient({
-  commandPrefix: '<',
-  owner: '148474055949942787',
-  disabledEvents: [
-    'TYPING_START',
-  ],
-});
-
-// Set up a SQLite DB to preserve guide-specific command availability
-sqlite.open(path.join(__dirname, '../settings.db'))
-  .then(db => bot.setProvider(new SQLiteProvider(db)))
-  .catch(error => { logger.error('Error loading SQLite DB:', error); });
 // const bot = new CommandoClient({
 //   commandPrefix: '<',
 //   owner: '148474055949942787',
@@ -23,6 +11,9 @@ sqlite.open(path.join(__dirname, '../settings.db'))
 //     'TYPING_START',
 //   ],
 // });
+const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
+// Initialize our database
+DatabaseService.initialize(logger);
 
 // Initialize commands and command groups
 // bot.registry
@@ -53,19 +44,23 @@ bot.once('ready', () => {
 
   logger.info('KIRBOT GO! <(^.^)>');
   logger.info(`Logged in as ${bot.user.tag}`);
-  logger.info(`Command prefix: ${bot.commandPrefix}`);
 
   bot.user.setActivity('<(\'.\'<)');
 });
 
+bot.on('interactionCreate', async (interaction) => {
+  if (!interaction.isChatInputCommand()) {
+    return;
+  }
+
+  const { commandName } = interaction;
+
+  logger.info(commandName);
+});
+
 // Handle errors
 bot.on('error', (err) => {
-  if (err.message === 'Cannot read property \'trim\' of undefined') {
-    // Swallow a bug in discord.js-commando at:
-    // node_modules/discord.js-commando/src/extensions/message.js:109:28
-  } else {
-    logger.error(err, 'Bot system error');
-  }
+  logger.error(err, 'Bot system error');
 });
 
 // Start the bot
