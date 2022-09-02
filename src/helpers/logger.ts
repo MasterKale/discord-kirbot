@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import pino, { MixinFn } from 'pino';
+import pino from 'pino';
 import { SnowflakeUtil } from 'discord.js';
 
 import { NODE_ENV } from './constants';
@@ -9,7 +9,7 @@ export interface LogTag {
   req_id: string;
 }
 
-let mixin: MixinFn | undefined = undefined;
+let mixin;
 if (NODE_ENV === 'production') {
   mixin = () => ({ hostname: 'prod-kirbot' });
 }
@@ -34,7 +34,7 @@ export function getLogTag (id?: string): LogTag {
   } else {
     // Otherwise generate a snowflake as an ID
     // See https://discordapp.com/developers/docs/reference#snowflakes
-    req_id = SnowflakeUtil.generate();
+    req_id = `${SnowflakeUtil.generate()}`;
   }
 
   return { req_id };
