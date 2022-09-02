@@ -1,8 +1,7 @@
-import { CommandoClient, SQLiteProvider } from 'discord.js-commando';
 import sqlite from 'sqlite';
 import path from 'path';
 
-import { DISCORD_BOT_TOKEN, CMD_GROUPS } from './helpers/constants';
+import { DISCORD_BOT_TOKEN } from './helpers/constants';
 import { logger } from './helpers/logger';
 
 const bot = new CommandoClient({
@@ -17,27 +16,34 @@ const bot = new CommandoClient({
 sqlite.open(path.join(__dirname, '../settings.db'))
   .then(db => bot.setProvider(new SQLiteProvider(db)))
   .catch(error => { logger.error('Error loading SQLite DB:', error); });
+// const bot = new CommandoClient({
+//   commandPrefix: '<',
+//   owner: '148474055949942787',
+//   disabledEvents: [
+//     'TYPING_START',
+//   ],
+// });
 
 // Initialize commands and command groups
-bot.registry
-  .registerDefaultTypes()
-  .registerGroups([
-    [CMD_GROUPS.PUBLIC, 'For Everyone'],
-  ])
-  .registerDefaultGroups()
-  .registerDefaultCommands({
-    unknownCommand: false,
-    help: false,
-    prefix: false,
-    commandState: false,
-    ping: false,
-  })
-  // Automatically load commands that exist in the commands/ directory
-  // A custom filter is specified so that the `require-all` library picks up .ts files during dev
-  .registerCommandsIn({
-    dirname: path.join(__dirname, 'commands'),
-    filter: /^([^.].*)\.[jt]s$/,
-  });
+// bot.registry
+//   .registerDefaultTypes()
+//   .registerGroups([
+//     [CMD_GROUPS.PUBLIC, 'For Everyone'],
+//   ])
+//   .registerDefaultGroups()
+//   .registerDefaultCommands({
+//     unknownCommand: false,
+//     help: false,
+//     prefix: false,
+//     commandState: false,
+//     ping: false,
+//   })
+//   // Automatically load commands that exist in the commands/ directory
+//   // A custom filter is specified so that the `require-all` library picks up .ts files during dev
+//   .registerCommandsIn({
+//     dirname: path.join(__dirname, 'commands'),
+//     filter: /^([^.].*)\.[jt]s$/,
+//   });
 
 bot.once('ready', () => {
   if (!bot.user) {
