@@ -152,8 +152,7 @@ const handleSet: KirbotSubCommandHandler = async (tag, interaction) => {
     normalized = `SW ${normalized}`;
   }
 
-  const memberTag = getMemberTag(member);
-  logger.info(tag, `Registering friend code "${normalized}" for ${memberTag} (${member.user.id})`);
+  logger.info(tag, `Registering normalized "${normalized}" for caller`);
 
   await settingsService.addFriendCode(member.user.id, normalized);
 
