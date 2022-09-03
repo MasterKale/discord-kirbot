@@ -4,7 +4,7 @@ import * as sqlite from 'sqlite';
 import sqlite3 from 'sqlite3';
 import type { Logger } from 'pino';
 
-class BaseDatabaseService {
+export class BaseDatabaseService {
   private _logger: Logger;
   private _db: sqlite.Database;
 
@@ -30,6 +30,10 @@ class BaseDatabaseService {
 
     return this._db;
   }
+
+  async get (sql: string): Promise<any> {
+    return this._db.get(sql);
+  }
 }
 
-export const DatabaseService = new BaseDatabaseService();
+export const databaseService = new BaseDatabaseService();

@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 
 import { DISCORD_BOT_TOKEN } from './helpers/constants';
 import { logger } from './helpers/logger';
-import { DatabaseService } from './services/database';
+import { databaseService } from './services/database';
 
 // const bot = new CommandoClient({
 //   commandPrefix: '<',
