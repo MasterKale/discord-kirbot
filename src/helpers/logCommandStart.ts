@@ -5,7 +5,7 @@ import { getLogTag, logger, LogTag } from './logger';
  * Help ensure consistent logging at the beginning of a command's execution
  */
 export function logCommandStart (interaction: ChatInputCommandInteraction): LogTag {
-  const { id, commandName, member } = interaction;
+  const { id, commandName, member, options } = interaction;
 
   const tag = getLogTag(id);
 
@@ -16,7 +16,13 @@ export function logCommandStart (interaction: ChatInputCommandInteraction): LogT
     memberID = member.user.id;
   }
 
-  logger.info(tag, `[COMMAND START: ${commandName}]`);
+  let subCommandLog = '';
+  const subCommandName = options.getSubcommand();
+  if (subCommandName) {
+    subCommandLog = ` (sub-command: ${subCommandName})`;
+  }
+
+  logger.info(tag, `[COMMAND START: ${commandName}${subCommandLog}]`);
 
   logger.debug(tag, `Called by ${memberTag} (${memberID})`);
 
