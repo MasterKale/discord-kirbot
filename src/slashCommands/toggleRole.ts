@@ -1,12 +1,17 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, GuildMemberRoleManager, Role } from 'discord.js';
 
-import { KirbotCommandHandler, KirbotCommandName } from '../helpers/constants';
+import { KirbotCommandHandler, KirbotCommandName, API_ERROR } from '../helpers/constants';
 import { logger } from '../helpers/logger';
 import { logCommandStart } from '../helpers/logCommandStart';
 
 enum Options {
   Role = 'role',
 }
+
+const recoverableErrors = [
+  API_ERROR.MISSING_PERMISSIONS,
+  API_ERROR.UNKNOWN_ROLE,
+];
 
 /**
  * A command to add or remove a role from yourself
@@ -31,7 +36,33 @@ export const handler: KirbotCommandHandler = async (interaction) => {
     throw new Error('How did this command get invoked by a non-member?');
   }
 
-  const role = options.getRole(Options.Role, true);
+  const role = options.getRole(Options.Role, true) as Role;
 
-  return interaction.reply(`Toggle Role: ${role}`);
+  logger.info(tag, `Toggling role "${role.name}"`);
+
+  const roleManager = member.roles as GuildMemberRoleManager;
+  try {
+    const hasRole = roleManager.cache.has(role.id);
+
+    let reply;
+    if (hasRole) {
+      logger.info(tag, 'Member has role, removing role');
+      await roleManager.remove(role, 'Toggled role off');
+      reply = `You no longer have the **${role.name}** role`;
+    } else {
+      logger.info(tag, 'Member does not have role, adding role');
+      await roleManager.add(role, 'Toggled role on');
+      reply = `You now have the **${role.name}** role`;
+    }
+
+    return interaction.reply(reply);
+  } catch (err) {
+    if (recoverableErrors.indexOf(err.code) >= 0) {
+      logger.info(tag, 'User tried to toggle a role above them');
+      return interaction.reply('That role cannot be toggled, please try again.');
+    } else {
+      logger.info({ ...tag, err }, 'Error toggling role');
+      throw err;
+    }
+  }
 };
