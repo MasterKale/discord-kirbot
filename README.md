@@ -13,3 +13,14 @@ The following should be enough permissions:
  - Manage Roles
 
 This all together is **268435456** in permission bit flags
+
+### Registering update commands
+
+Right now the best way is to shell into the bot and run the npm command from in there:
+
+```sh
+$> docker-compose run bot sh
+(bot) $> npm run deployCommands
+```
+
+This is only necessary when command configs are added, updated, removed, etc... Changes to the handlers don't require this step.
