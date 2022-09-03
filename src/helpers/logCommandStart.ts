@@ -1,15 +1,24 @@
-// import { CommandoMessage } from 'discord.js-commando';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { getLogTag, logger, LogTag } from './logger';
 
-// import { logger, LogTag } from './logger';
+/**
+ * Help ensure consistent logging at the beginning of a command's execution
+ */
+export function logCommandStart (interaction: ChatInputCommandInteraction): LogTag {
+  const { id, commandName, member } = interaction;
 
-// /**
-//  * Help ensure consistent logging at the beginning of a command's execution
-//  */
-// export default function logCommandStart (tag: LogTag, message: CommandoMessage): void {
-//   const { command, client, guild, member } = message;
-//   const { commandPrefix } = client;
+  const tag = getLogTag(id);
 
-//   logger.info(tag, `[EVENT START: ${commandPrefix}${command.name}]`);
+  let memberTag = 'Unknown Member';
+  let memberID = '???';
+  if (member) {
+    memberTag = `${member.user.username}#${member.user.discriminator}`;
+    memberID = member.user.id;
+  }
 
-//   logger.debug(tag, `Called by ${member.user.tag} (${member.id}) in ${guild.name} (${guild.id})`);
-// }
+  logger.info(tag, `[COMMAND START: ${commandName}]`);
+
+  logger.debug(tag, `Called by ${memberTag} (${memberID})`);
+
+  return tag;
+}
