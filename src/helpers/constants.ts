@@ -1,9 +1,12 @@
 import dotenv from 'dotenv';
 import {
   ChatInputCommandInteraction,
-  SlashCommandBuilder,
   InteractionResponse,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
 } from 'discord.js';
+
+import { LogTag } from './logger';
 
 dotenv.config();
 
@@ -23,9 +26,13 @@ export enum CMD_GROUPS {
 export const kirbotCommandNames = ['toggle-role', 'friend-code'] as const;
 export type KirbotCommandName = typeof kirbotCommandNames[number];
 
-export type KirbotCommandConfig = Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
+export type KirbotCommandConfig =
+  Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
+  | SlashCommandSubcommandsOnlyBuilder;
 export type KirbotCommandHandler = (interaction: ChatInputCommandInteraction) =>
   Promise<InteractionResponse<boolean>>;
+export type KirbotSubCommandHandler = (tag: LogTag, interaction: ChatInputCommandInteraction) =>
+Promise<InteractionResponse<boolean>>;
 
 /**
  * Discord API error codes
