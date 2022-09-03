@@ -31,8 +31,12 @@ export class BaseDatabaseService {
     return this._db;
   }
 
-  async get (sql: string): Promise<any> {
+  async get (sql: string) {
     return this._db.get(sql);
+  }
+
+  async run (sql: string) {
+    return this._db.run(sql);
   }
 }
 
