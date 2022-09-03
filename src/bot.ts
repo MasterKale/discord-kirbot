@@ -1,13 +1,19 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 
-import { DISCORD_BOT_TOKEN } from './helpers/constants';
+import { DISCORD_BOT_TOKEN, KirbotCommandName, KirbotCommandHandler } from './helpers/constants';
 import { logger } from './helpers/logger';
 import { databaseService } from './services/database';
+import { getSlashCommands } from './helpers/getSlashCommands';
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
 // Initialize our database
 databaseService.initialize(logger);
 
+// Gather commands
+const commandHandlers = new Collection<string, KirbotCommandHandler>();
+getSlashCommands().forEach(([config, handler]) => {
+  commandHandlers.set(config.name, handler);
+});
 
 bot.once('ready', () => {
   if (!bot.user) {
@@ -28,7 +34,21 @@ bot.on('interactionCreate', async (interaction) => {
 
   const { commandName } = interaction;
 
-  logger.info(commandName);
+  const commandHandler = commandHandlers.get(commandName as KirbotCommandName);
+
+  if (!commandHandler) {
+    return;
+  }
+
+  try {
+    await commandHandler(interaction);
+  } catch (err) {
+    logger.error(err, `Error executing handler for command "${commandName}"`);
+    await interaction.reply({
+      content: 'Something went wrong. Please ping an admin for assistance',
+      ephemeral: true,
+    });
+  }
 });
 
 // Handle errors
