@@ -6,7 +6,7 @@ import { databaseService } from './services/database';
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
 // Initialize our database
-DatabaseService.initialize(logger);
+databaseService.initialize(logger);
 
 
 bot.once('ready', () => {
