@@ -7,9 +7,11 @@ import { getMemberTag } from './getMemberTag';
  * Help ensure consistent logging at the beginning of a command's execution
  */
 export function logCommandStart (interaction: ChatInputCommandInteraction): LogTag {
-  const { id, commandName, member, options } = interaction;
+  const { id, member } = interaction;
 
   const tag = getLogTag(id);
+
+  const commandNameLog = interaction.toString();
 
   let memberTag = 'Unknown Member';
   let memberID = '???';
@@ -18,14 +20,7 @@ export function logCommandStart (interaction: ChatInputCommandInteraction): LogT
     memberID = member.user.id;
   }
 
-  let subCommandLog = '';
-  const subCommandName = options.getSubcommand();
-  if (subCommandName) {
-    subCommandLog = ` (sub-command: ${subCommandName})`;
-  }
-
-  logger.info(tag, `[COMMAND START: ${commandName}${subCommandLog}]`);
-
+  logger.info(tag, `[COMMAND START: ${commandNameLog}]`);
   logger.debug(tag, `Called by ${memberTag} (${memberID})`);
 
   return tag;
