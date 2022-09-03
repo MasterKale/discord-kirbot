@@ -4,37 +4,10 @@ import { DISCORD_BOT_TOKEN } from './helpers/constants';
 import { logger } from './helpers/logger';
 import { databaseService } from './services/database';
 
-// const bot = new CommandoClient({
-//   commandPrefix: '<',
-//   owner: '148474055949942787',
-//   disabledEvents: [
-//     'TYPING_START',
-//   ],
-// });
 const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
 // Initialize our database
 DatabaseService.initialize(logger);
 
-// Initialize commands and command groups
-// bot.registry
-//   .registerDefaultTypes()
-//   .registerGroups([
-//     [CMD_GROUPS.PUBLIC, 'For Everyone'],
-//   ])
-//   .registerDefaultGroups()
-//   .registerDefaultCommands({
-//     unknownCommand: false,
-//     help: false,
-//     prefix: false,
-//     commandState: false,
-//     ping: false,
-//   })
-//   // Automatically load commands that exist in the commands/ directory
-//   // A custom filter is specified so that the `require-all` library picks up .ts files during dev
-//   .registerCommandsIn({
-//     dirname: path.join(__dirname, 'commands'),
-//     filter: /^([^.].*)\.[jt]s$/,
-//   });
 
 bot.once('ready', () => {
   if (!bot.user) {
