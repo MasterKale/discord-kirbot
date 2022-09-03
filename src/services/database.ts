@@ -13,7 +13,7 @@ class BaseDatabaseService {
 
     try {
       const db = await sqlite.open({
-        filename: path.join(__dirname, '../settings.db'),
+        filename: path.join(__dirname, '../../settings.db'),
         driver: sqlite3.Database,
       });
 
