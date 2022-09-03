@@ -1,5 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
+
 import { getLogTag, logger, LogTag } from './logger';
+import { getMemberTag } from './getMemberTag';
 
 /**
  * Help ensure consistent logging at the beginning of a command's execution
@@ -12,7 +14,7 @@ export function logCommandStart (interaction: ChatInputCommandInteraction): LogT
   let memberTag = 'Unknown Member';
   let memberID = '???';
   if (member) {
-    memberTag = `${member.user.username}#${member.user.discriminator}`;
+    memberTag = getMemberTag(member);
     memberID = member.user.id;
   }
 
