@@ -20,7 +20,7 @@ export enum CMD_GROUPS {
   PUBLIC = 'public',
 }
 
-export const kirbotCommandNames = ['toggle-role', 'set-fc', 'fc'] as const;
+export const kirbotCommandNames = ['toggle-role', 'friend-code'] as const;
 export type KirbotCommandName = typeof kirbotCommandNames[number];
 
 export type KirbotCommandConfig = Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
