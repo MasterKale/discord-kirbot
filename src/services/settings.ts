@@ -2,9 +2,6 @@ import { BaseDatabaseService, databaseService } from './database';
 
 // Settings are a JSON blob in a single table in SQLite for now. These are values within the blob
 type FriendCodes = { [key: string]: string };
-type Settings = {
-  friendCodes?: FriendCodes,
-};
 
 class BaseSettingsService {
   private dbService: BaseDatabaseService;
@@ -13,21 +10,22 @@ class BaseSettingsService {
     this.dbService = dbService;
   }
 
-  private async getSettings (): Promise<Settings> {
-    const results: { settings: string } =
-      await this.dbService.get('SELECT settings FROM settings LIMIT 1');
-
-    return JSON.parse(results.settings) as Settings;
-  }
-
   async getFriendCodes (): Promise<FriendCodes> {
-    let { friendCodes } = await this.getSettings();
+    let { friendCodes } = await this.dbService.get(
+      'SELECT json_extract(settings, "$.friendCodes") AS friendCodes FROM settings LIMIT 1',
+    );
 
     if (!friendCodes) {
-      friendCodes = {};
+      friendCodes = '{}';
     }
 
-    return friendCodes;
+    return JSON.parse(friendCodes);
+  }
+
+  async addFriendCode (userId: string, code: string): Promise<void> {
+    await this.dbService.run(
+      `UPDATE settings SET settings = json_set(settings, '$.friendCodes.${userId}', '${code}')`,
+    );
   }
 }
 
