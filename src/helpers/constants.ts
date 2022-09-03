@@ -1,4 +1,9 @@
 import dotenv from 'dotenv';
+import {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  InteractionResponse,
+} from 'discord.js';
 
 dotenv.config();
 
@@ -15,15 +20,12 @@ export enum CMD_GROUPS {
   PUBLIC = 'public',
 }
 
-export enum CMD_NAMES {
-  PUBLIC_TOGGLE_ROLE = 'toggle-role',
-  PUBLIC_SET_FRIEND_CODE = 'set-fc',
-  PUBLIC_GET_FRIEND_CODE = 'fc',
-}
+export const kirbotCommandNames = ['toggle-role', 'set-fc', 'fc'] as const;
+export type KirbotCommandName = typeof kirbotCommandNames[number];
 
-export enum SETTINGS {
-  FRIEND_CODES = 'friendCodes',
-}
+export type KirbotCommandConfig = Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
+export type KirbotCommandHandler = (interaction: ChatInputCommandInteraction) =>
+  Promise<InteractionResponse<boolean>>;
 
 /**
  * Discord API error codes
