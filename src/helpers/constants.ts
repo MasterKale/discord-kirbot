@@ -1,6 +1,20 @@
+import dotenv from 'dotenv';
+import {
+  ChatInputCommandInteraction,
+  InteractionResponse,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from 'discord.js';
+
+import { LogTag } from './logger';
+
+dotenv.config();
+
 export const {
   NODE_ENV = 'production',
   DISCORD_BOT_TOKEN,
+  DISCORD_BOT_APPLICATION_ID,
+  DISCORD_BOT_GUILD_ID,
   PAPERTRAIL_HOST,
   PAPERTRAIL_PORT,
 } = process.env;
@@ -9,15 +23,16 @@ export enum CMD_GROUPS {
   PUBLIC = 'public',
 }
 
-export enum CMD_NAMES {
-  PUBLIC_TOGGLE_ROLE = 'toggle-role',
-  PUBLIC_SET_FRIEND_CODE = 'set-fc',
-  PUBLIC_GET_FRIEND_CODE = 'fc',
-}
+export const kirbotCommandNames = ['toggle-role', 'friend-code'] as const;
+export type KirbotCommandName = typeof kirbotCommandNames[number];
 
-export enum SETTINGS {
-  FRIEND_CODES = 'friendCodes',
-}
+export type KirbotCommandConfig =
+  Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
+  | SlashCommandSubcommandsOnlyBuilder;
+export type KirbotCommandHandler = (interaction: ChatInputCommandInteraction) =>
+  Promise<InteractionResponse<boolean>>;
+export type KirbotSubCommandHandler = (tag: LogTag, interaction: ChatInputCommandInteraction) =>
+Promise<InteractionResponse<boolean>>;
 
 /**
  * Discord API error codes

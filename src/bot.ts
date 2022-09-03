@@ -1,43 +1,19 @@
-import { CommandoClient, SQLiteProvider } from 'discord.js-commando';
-import sqlite from 'sqlite';
-import path from 'path';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 
-import { DISCORD_BOT_TOKEN, CMD_GROUPS } from './helpers/constants';
+import { DISCORD_BOT_TOKEN, KirbotCommandName, KirbotCommandHandler } from './helpers/constants';
 import { logger } from './helpers/logger';
+import { databaseService } from './services/database';
+import { getSlashCommands } from './helpers/getSlashCommands';
 
-const bot = new CommandoClient({
-  commandPrefix: '<',
-  owner: '148474055949942787',
-  disabledEvents: [
-    'TYPING_START',
-  ],
+const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
+// Initialize our database
+databaseService.initialize(logger);
+
+// Gather commands
+const commandHandlers = new Collection<string, KirbotCommandHandler>();
+getSlashCommands().forEach(([config, handler]) => {
+  commandHandlers.set(config.name, handler);
 });
-
-// Set up a SQLite DB to preserve guide-specific command availability
-sqlite.open(path.join(__dirname, '../settings.db'))
-  .then(db => bot.setProvider(new SQLiteProvider(db)))
-  .catch(error => { logger.error('Error loading SQLite DB:', error); });
-
-// Initialize commands and command groups
-bot.registry
-  .registerDefaultTypes()
-  .registerGroups([
-    [CMD_GROUPS.PUBLIC, 'For Everyone'],
-  ])
-  .registerDefaultGroups()
-  .registerDefaultCommands({
-    unknownCommand: false,
-    help: false,
-    prefix: false,
-    commandState: false,
-    ping: false,
-  })
-  // Automatically load commands that exist in the commands/ directory
-  // A custom filter is specified so that the `require-all` library picks up .ts files during dev
-  .registerCommandsIn({
-    dirname: path.join(__dirname, 'commands'),
-    filter: /^([^.].*)\.[jt]s$/,
-  });
 
 bot.once('ready', () => {
   if (!bot.user) {
@@ -47,19 +23,37 @@ bot.once('ready', () => {
 
   logger.info('KIRBOT GO! <(^.^)>');
   logger.info(`Logged in as ${bot.user.tag}`);
-  logger.info(`Command prefix: ${bot.commandPrefix}`);
 
   bot.user.setActivity('<(\'.\'<)');
 });
 
+bot.on('interactionCreate', async (interaction) => {
+  if (!interaction.isChatInputCommand()) {
+    return;
+  }
+
+  const { commandName } = interaction;
+
+  const commandHandler = commandHandlers.get(commandName as KirbotCommandName);
+
+  if (!commandHandler) {
+    return;
+  }
+
+  try {
+    await commandHandler(interaction);
+  } catch (err) {
+    logger.error(err, `Error executing handler for command "${commandName}"`);
+    await interaction.reply({
+      content: 'Something went wrong. Please ping an admin for assistance',
+      ephemeral: true,
+    });
+  }
+});
+
 // Handle errors
 bot.on('error', (err) => {
-  if (err.message === 'Cannot read property \'trim\' of undefined') {
-    // Swallow a bug in discord.js-commando at:
-    // node_modules/discord.js-commando/src/extensions/message.js:109:28
-  } else {
-    logger.error(err, 'Bot system error');
-  }
+  logger.error(err, 'Bot system error');
 });
 
 // Start the bot
