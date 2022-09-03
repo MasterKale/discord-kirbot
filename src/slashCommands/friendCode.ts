@@ -8,7 +8,6 @@ import {
   KirbotSubCommandHandler,
 } from '../helpers/constants';
 import { logCommandStart } from '../helpers/logCommandStart';
-import { getMemberTag } from '../helpers/getMemberTag';
 import { settingsService } from '../services/settings';
 
 enum Options {
@@ -30,6 +29,14 @@ enum SubCommand {
  */
 const regexFriendCode = /^(?:sw[- ])?([\d]{4}[- ][\d]{4}[- ][\d]{4})$/i;
 
+/**
+ * A command for managing Switch friend codes
+ *
+ * Subcommands:
+ *
+ * - get: Get your or someone else's code
+ * - set: Add a friend code for yourself
+ */
 export const config = new SlashCommandBuilder()
   .setName('friend-code' as KirbotCommandName)
   .setDescription('Switch Friend Codes Lookup')
@@ -56,9 +63,6 @@ export const config = new SlashCommandBuilder()
       ),
   );
 
-/**
- * Get and set Switch Friend Codes
- */
 export const handler: KirbotCommandHandler = async (interaction) => {
   const { options } = interaction;
 
@@ -122,11 +126,7 @@ const handleSet: KirbotSubCommandHandler = async (tag, interaction) => {
     throw new Error('How did this command get invoked by a non-member?');
   }
 
-  const rawCode = options.getString(Options.Code);
-
-  if (!rawCode) {
-    throw new Error(`${Options.Code} option cannot be blank`);
-  }
+  const rawCode = options.getString(Options.Code, true);
 
   // User is registering a friend code for their self
   logger.info(tag, `Validating friend code "${rawCode}"`);
