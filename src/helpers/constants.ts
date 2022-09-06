@@ -94,3 +94,9 @@ export enum API_ERROR {
   REACTION_BLOCKED = 90001,
   RESOURCE_OVERLOADED = 130000,
 }
+
+// API errors above that can be safely handled with a cancellation
+export const recoverableErrors = [
+  API_ERROR.MISSING_PERMISSIONS,
+  API_ERROR.UNKNOWN_ROLE,
+];

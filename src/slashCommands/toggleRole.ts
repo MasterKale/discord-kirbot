@@ -1,17 +1,17 @@
 import { SlashCommandBuilder, GuildMemberRoleManager, Role } from 'discord.js';
 
-import { KirbotCommandHandler, KirbotCommandName, API_ERROR } from '../helpers/constants';
+import {
+  KirbotCommandHandler,
+  KirbotCommandName,
+  API_ERROR,
+  recoverableErrors,
+} from '../helpers/constants';
 import { logger } from '../helpers/logger';
 import { logCommandStart } from '../helpers/logCommandStart';
 
 enum Options {
   Role = 'role',
 }
-
-const recoverableErrors = [
-  API_ERROR.MISSING_PERMISSIONS,
-  API_ERROR.UNKNOWN_ROLE,
-];
 
 /**
  * A command to add or remove a role from yourself
