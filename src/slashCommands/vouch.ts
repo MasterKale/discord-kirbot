@@ -7,6 +7,7 @@ import {
   KirbotCommandHandler,
   KirbotCommandName,
   DISCORD_GUILD_VOUCH_ROLE_ID,
+  recoverableErrors,
 } from '../helpers/constants';
 
 enum Options {
@@ -76,10 +77,20 @@ export const handler: KirbotCommandHandler = async (interaction) => {
 
   // The indicated member does not already have the specified role
   logger.info(tag, `New member ${friendMemberTag} has been vouched for, adding role`);
-  friendRoleManager.add(
-    vouchRole,
-    `${invokerTag} successfully vouched for ${friendMemberTag}`,
-  );
+  try {
+    friendRoleManager.add(
+      vouchRole,
+      `${invokerTag} successfully vouched for ${friendMemberTag}`,
+    );
+  } catch (err) {
+    if (recoverableErrors.indexOf(err.code) >= 0) {
+      logger.info(tag, 'Kirbot tried to add a role above them');
+      return interaction.reply("I can't add that role cannot be toggled, please try again.");
+    } else {
+      logger.info({ ...tag, err }, 'Error toggling role');
+      throw err;
+    }
+  }
 
   return interaction.reply(`Welcome aboard, ${friendMember}! ${emojiKirbot}`);
 };
