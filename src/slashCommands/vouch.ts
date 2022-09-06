@@ -55,9 +55,17 @@ export const handler: KirbotCommandHandler = async (interaction) => {
     throw new Error(`User ID ${friendUser.id} does not exist in this guild`);
   }
 
-  const roleManager = friendMember.roles as GuildMemberRoleManager;
+  const invokerRoleManager = invoker.roles as GuildMemberRoleManager;
 
-  if (roleManager.cache.has(vouchRole.id)) {
+  // Require the caller of the command to have the vouch role, otherwise new members can vouch for
+  // new members
+  if (!invokerRoleManager.cache.has(vouchRole.id)) {
+    return interaction.reply(`Hey, get someone to vouch for you first! ${emojiKirybgun}`);
+  }
+
+  const friendRoleManager = friendMember.roles as GuildMemberRoleManager;
+
+  if (friendRoleManager.cache.has(vouchRole.id)) {
     return interaction.reply(`That user already has access to the server! ${emojiKirybgun}`);
   }
 
@@ -65,7 +73,7 @@ export const handler: KirbotCommandHandler = async (interaction) => {
   const invokerTag = getMemberTag(invoker);
   const friendMemberTag = getMemberTag(friendMember);
   logger.info(tag, `New member ${friendMemberTag} has been vouched for, adding role`);
-  roleManager.add(
+  friendRoleManager.add(
     vouchRole,
     `${invokerTag} successfully vouched for ${friendMemberTag}`,
   );
