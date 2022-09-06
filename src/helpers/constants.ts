@@ -15,6 +15,7 @@ export const {
   DISCORD_BOT_TOKEN,
   DISCORD_BOT_APPLICATION_ID,
   DISCORD_BOT_GUILD_ID,
+  DISCORD_GUILD_VOUCH_ROLE_ID, // Miis role in Nintengoons
   PAPERTRAIL_HOST,
   PAPERTRAIL_PORT,
 } = process.env;
@@ -23,7 +24,7 @@ export enum CMD_GROUPS {
   PUBLIC = 'public',
 }
 
-export const kirbotCommandNames = ['toggle-role', 'friend-code'] as const;
+export const kirbotCommandNames = ['toggle-role', 'friend-code', 'vouch'] as const;
 export type KirbotCommandName = typeof kirbotCommandNames[number];
 
 export type KirbotCommandConfig =
