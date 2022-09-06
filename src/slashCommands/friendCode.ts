@@ -39,11 +39,11 @@ const regexFriendCode = /^(?:sw[- ])?([\d]{4}[- ][\d]{4}[- ][\d]{4})$/i;
  */
 export const config = new SlashCommandBuilder()
   .setName('friend-code' as KirbotCommandName)
-  .setDescription('Switch Friend Codes Lookup')
+  .setDescription('Look up Switch friend codes')
   .addSubcommand(subcommand =>
     subcommand
       .setName(SubCommand.Get)
-      .setDescription('Look up your or someone else\'s Switch friend code')
+      .setDescription('Get your or someone else\'s Switch friend code')
       .addUserOption(option =>
         option
           .setName(Options.Friend)

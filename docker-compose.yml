@@ -13,6 +13,7 @@ services:
       - DISCORD_BOT_TOKEN
       - DISCORD_BOT_APPLICATION_ID
       - DISCORD_BOT_GUILD_ID
+      - DISCORD_GUILD_VOUCH_ROLE_ID
       - PAPERTRAIL_HOST
       - PAPERTRAIL_PORT
     command: "npm run host"
