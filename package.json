@@ -8,10 +8,11 @@
     "build": "tsc",
     "host": "./host.sh",
     "deployCommands": "ts-node src/deployCommands.ts",
-    "lint": "eslint src/ --ext .ts"
+    "lint": "eslint src/ --ext .ts",
+    "prepare": "husky"
   },
   "engines": {
-    "node": "16"
+    "node": "22"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,7 @@
     "@typescript-eslint/parser": "^5.36.1",
     "eslint": "^8.23.0",
     "eslint-config-semistandard": "^17.0.0",
-    "husky": "^8.0.1",
+    "husky": "^9.1.7",
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.19",
     "pino-pretty": "^9.1.0",
@@ -41,12 +42,6 @@
     "pino-papertrail": "^2.1.0",
     "sqlite": "^4.1.2",
     "sqlite3": "^5.0.11"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run build"
-    }
   },
   "lint-staged": {
     "*.{js,ts}": [
