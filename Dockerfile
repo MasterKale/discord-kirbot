@@ -11,4 +11,4 @@ COPY src/ ./src/
 RUN npm run build
 
 # Start the app
-CMD ["npm", "run", "host"]
+CMD ["cd", "/usr/src/app", "&&", "npm", "run", "host"]
