@@ -6,6 +6,6 @@ docker compose stop bot
 echo "[---removing containers---]"
 docker compose rm -f
 echo "[---building prod bot---]"
-docker compose build bot
+docker compose -f docker-compose.yml build --no-cache bot
 echo "[---restarting prod bot---]"
 docker compose -f docker-compose.yml up -d --no-deps bot
